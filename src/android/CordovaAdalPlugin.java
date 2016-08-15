@@ -176,8 +176,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         String[] extraScopes = {""};
 
         authContext.acquireToken(this.cordova.getActivity(), scopes, extraScopes, clientId, redirectUrl,
-                new UserIdentifier(userId, null), SHOW_PROMPT_ALWAYS, extraQueryParams,
-                new DefaultAuthenticationCallback(callbackContext));
+                SHOW_PROMPT_ALWAYS, extraQueryParams, new DefaultAuthenticationCallback(callbackContext));
 
         return true;
 
