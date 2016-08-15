@@ -193,9 +193,8 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         }
         
         String[] scopes = {resourceUrl};
-        String[] extraScopes = {clientId};
 
-        authContext.acquireTokenSilent(scopes, extraScopes, userId, new DefaultAuthenticationCallback(callbackContext));
+        authContext.acquireTokenSilent(scopes, clientId, userId, new DefaultAuthenticationCallback(callbackContext));
         return true;
     }
 
