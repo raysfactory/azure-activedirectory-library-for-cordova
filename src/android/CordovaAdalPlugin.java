@@ -191,8 +191,11 @@ public class CordovaAdalPlugin extends CordovaPlugin {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, e.getMessage()));
             return true;
         }
+        
+        String[] scopes = {resourceUrl};
+        String[] extraScopes = {clientId};
 
-        authContext.acquireTokenSilent(resourceUrl, clientId, userId, new DefaultAuthenticationCallback(callbackContext));
+        authContext.acquireTokenSilent(scopes, extraScopes, userId, new DefaultAuthenticationCallback(callbackContext));
         return true;
     }
 
@@ -211,7 +214,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         List<TokenCacheItem> items = cache.readItems();
         
         if(items != null && !items.isEmpty()){
-            for(TokenCacheItem cachedItem : items){
+            for(TokenCacheItem item : items){
                 result.put(tokenItemToJSON(item));
             }
         }
