@@ -30,13 +30,13 @@ class SimpleSerialization {
         }
 
         userInfo.put("displayableId", info.getDisplayableId());
-        userInfo.put("familyName", info.getFamilyName());
-        userInfo.put("givenName", info.getGivenName());
+        //userInfo.put("familyName", info.getFamilyName());
+        //userInfo.put("givenName", info.getGivenName());
         userInfo.put("identityProvider", info.getIdentityProvider());
         userInfo.put("passwordChangeUrl", info.getPasswordChangeUrl());
         userInfo.put("passwordExpiresOn", info.getPasswordExpiresOn());
-        userInfo.put("uniqueId", info.getUserId());
-        userInfo.put("userId", info.getUserId());
+        userInfo.put("uniqueId", info.getUniqueId());
+        //userInfo.put("userId", info.getUserId());
 
         return userInfo;
     }
@@ -52,10 +52,10 @@ class SimpleSerialization {
     static JSONObject authenticationResultToJSON(AuthenticationResult authenticationResult) throws JSONException {
         JSONObject authResult = new JSONObject();
 
-        authResult.put("accessToken", authenticationResult.getAccessToken());
-        authResult.put("accessTokenType", authenticationResult.getAccessTokenType());
+        //authResult.put("accessToken", authenticationResult.getAccessToken());
+        //authResult.put("accessTokenType", authenticationResult.getAccessTokenType());
         authResult.put("expiresOn", authenticationResult.getExpiresOn());
-        authResult.put("idToken", authenticationResult.getIdToken());
+        //authResult.put("idToken", authenticationResult.getIdToken());
         authResult.put("isMultipleResourceRefreshToken", authenticationResult.getIsMultiResourceRefreshToken());
         authResult.put("statusCode", authenticationResult.getStatus());
         authResult.put("tenantId", authenticationResult.getTenantId());
@@ -86,7 +86,7 @@ class SimpleSerialization {
         result.put("clientId", item.getClientId());
         result.put("expiresOn", item.getExpiresOn());
         result.put("isMultipleResourceRefreshToken", item.getIsMultiResourceRefreshToken());
-        result.put("resource", item.getResource());
+        //result.put("resource", item.getResource());
         result.put("tenantId", item.getTenantId());
         result.put("idToken", item.getRawIdToken());
 

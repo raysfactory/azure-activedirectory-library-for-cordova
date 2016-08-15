@@ -160,19 +160,22 @@ public class CordovaAdalPlugin extends CordovaPlugin {
             return true;
         }
 
-        if (userId != null) {
-            ITokenCacheStore cache = authContext.getCache();
-            if (cache instanceof ITokenStoreQuery) {
+        // if (userId != null) {
+        //     ITokenCacheStore cache = authContext.getCache();
+        //     if (cache instanceof ITokenStoreQuery) {
+        // 
+        //         List<TokenCacheItem> tokensForUserId = ((ITokenStoreQuery)cache).getTokensForUser(userId);
+        //         if (tokensForUserId.size() > 0) {
+        //             // Try to acquire alias for specified userId
+        //             userId = tokensForUserId.get(0).getUserInfo().getDisplayableId();
+        //         }
+        //     }
+        // }
+        
+        String[] scopes = {resourceUrl};
+        String[] extraScopes = {clientId};
 
-                List<TokenCacheItem> tokensForUserId = ((ITokenStoreQuery)cache).getTokensForUser(userId);
-                if (tokensForUserId.size() > 0) {
-                    // Try to acquire alias for specified userId
-                    userId = tokensForUserId.get(0).getUserInfo().getDisplayableId();
-                }
-            }
-        }
-
-        authContext.acquireToken(this.cordova.getActivity(), resourceUrl, clientId, redirectUrl,
+        authContext.acquireToken(this.cordova.getActivity(), scopes, extraScopes, redirectUrl,
                 userId, SHOW_PROMPT_ALWAYS, extraQueryParams, new DefaultAuthenticationCallback(callbackContext));
 
         return true;
@@ -205,15 +208,22 @@ public class CordovaAdalPlugin extends CordovaPlugin {
 
         JSONArray result = new JSONArray();
         ITokenCacheStore cache = authContext.getCache();
-
-        if (cache instanceof ITokenStoreQuery) {
-            Iterator<TokenCacheItem> cacheItems = ((ITokenStoreQuery)cache).getAll();
-
-            while (cacheItems.hasNext()){
-                TokenCacheItem item = cacheItems.next();
+        List<TokenCacheItem> items = cache.readItems();
+        
+        if(items != null && !items.isEmpty()){
+            for(TokenCacheItem cachedItem : items){
                 result.put(tokenItemToJSON(item));
             }
         }
+
+        // if (cache instanceof ITokenCacheStore) {
+        //     Iterator<TokenCacheItem> cacheItems = ((ITokenStoreQuery)cache).getAll();
+        // 
+        //     while (cacheItems.hasNext()){
+        //         TokenCacheItem item = cacheItems.next();
+        //         result.put(tokenItemToJSON(item));
+        //     }
+        // }
 
         callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, result));
 
@@ -231,8 +241,9 @@ public class CordovaAdalPlugin extends CordovaPlugin {
             return true;
         }
 
-        String key = CacheKey.createCacheKey(itemAuthority, resource, clientId, isMultipleResourceRefreshToken, userId);
-        authContext.getCache().removeItem(key);
+        // TODO: figure out how to create a TokenCacheItem from these to delete
+        // String key = TokenCacheKey.createCacheKey(itemAuthority, resource, clientId, isMultipleResourceRefreshToken, userId);
+        // authContext.getCache().deleteItem(key);
 
         callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
         return true;
@@ -247,7 +258,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
             return true;
         }
 
-        authContext.getCache().removeAll();
+        authContext.getCache().clear();
         callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
         return true;
     }
@@ -255,7 +266,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
     private boolean setUseBroker(boolean useBroker) {
 
         try {
-            AuthenticationSettings.INSTANCE.setUseBroker(useBroker);
+            AuthenticationSettings.INSTANCE.setSkipBroker(!useBroker);
 
             // Android 6.0 "Marshmallow" introduced a new permissions model where the user can turn on and off permissions as necessary.
             // This means that applications must handle these permission in run time.
