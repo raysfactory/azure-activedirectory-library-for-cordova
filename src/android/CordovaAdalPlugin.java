@@ -173,10 +173,11 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         // }
         
         String[] scopes = {resourceUrl};
-        String[] extraScopes = {clientId};
+        String[] extraScopes = {""};
 
-        authContext.acquireToken(this.cordova.getActivity(), scopes, extraScopes, redirectUrl,
-                userId, SHOW_PROMPT_ALWAYS, extraQueryParams, new DefaultAuthenticationCallback(callbackContext));
+        authContext.acquireToken(this.cordova.getActivity(), scopes, extraScopes, clientId, redirectUrl,
+                new UserIdentifier(userId, null), SHOW_PROMPT_ALWAYS, extraQueryParams,
+                new DefaultAuthenticationCallback(callbackContext));
 
         return true;
 
@@ -194,7 +195,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         
         String[] scopes = {clientId};
 
-        authContext.acquireTokenSilent(scopes, clientId, new UserIdentifier(userId, null), new DefaultAuthenticationCallback(callbackContext));
+        authContext.acquireTokenSilent(scopes, resourceUrl, new UserIdentifier(userId, null), new DefaultAuthenticationCallback(callbackContext));
         return true;
     }
 
