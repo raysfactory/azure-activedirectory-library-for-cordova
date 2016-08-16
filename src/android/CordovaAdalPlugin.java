@@ -60,7 +60,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
             }
         }
         
-        setUseBroker(false); // needs to default to false, "setSkipBroker" makes this default to true
+        setUseBroker(false, true); // needs to default to false, "setSkipBroker" makes this default to true
     }
 
     @Override
@@ -133,7 +133,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         } else if (action.equals("setUseBroker")) {
 
             boolean useBroker = args.getBoolean(0);
-            return setUseBroker(useBroker);
+            return setUseBroker(useBroker, false);
         }
 
         return false;
@@ -267,10 +267,15 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         return true;
     }
 
-    private boolean setUseBroker(boolean useBroker) {
+    private boolean setUseBroker(boolean useBroker, boolean internal) {
 
         try {
+            
             AuthenticationSettings.INSTANCE.setSkipBroker(!useBroker);
+            
+            if(internal){ // awful hack to get around the setSkipBroker inversion
+                return;
+            }
 
             // Android 6.0 "Marshmallow" introduced a new permissions model where the user can turn on and off permissions as necessary.
             // This means that applications must handle these permission in run time.
