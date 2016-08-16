@@ -38,6 +38,7 @@ import static com.microsoft.aad.adal.SimpleSerialization.tokenItemToJSON;
 public class CordovaAdalPlugin extends CordovaPlugin {
 
     private static final PromptBehavior SHOW_PROMPT_ALWAYS = PromptBehavior.Always;
+    private static final UserIdentifier.UserIdentifierType USER_DISPLAYABLE_ID = UserIdentifier.UserIdentifierType.OptionalDisplayableId;
 
     private static final int GET_ACCOUNTS_PERMISSION_REQ_CODE = 0;
     private static final String PERMISSION_DENIED_ERROR =  "Permissions denied";
@@ -196,8 +197,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         
         String[] scopes = {clientId};
         String[] extraScopes = {""};
-        String user = (userId == null ? "" : userId);
-        UserIdentifier identifier = new UserIdentifier(user, UserIdentifier.UserIdentifierType.OptionalDisplayableId);
+        UserIdentifier identifier = new UserIdentifier(userId, USER_DISPLAYABLE_ID);
         DefaultAuthenticationCallback callback = new DefaultAuthenticationCallback(callbackContext);
 
         authContext.acquireToken(
@@ -228,8 +228,16 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         }
         
         String[] scopes = {clientId};
+        UserIdentifier identifier = new UserIdentifier(userId, USER_DISPLAYABLE_ID);
+        DefaultAuthenticationCallback callback = new DefaultAuthenticationCallback(callbackContext);
 
-        authContext.acquireTokenSilent(scopes, resourceUrl, new UserIdentifier(userId, null), new DefaultAuthenticationCallback(callbackContext));
+        authContext.acquireTokenSilent(
+            scopes,
+            resourceUrl,
+            identifier,
+            callback
+        );
+        
         return true;
     }
 
