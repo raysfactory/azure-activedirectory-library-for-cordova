@@ -59,6 +59,8 @@ public class CordovaAdalPlugin extends CordovaPlugin {
                 Log.w("CordovaAdalPlugin", "Unable to create secret key: " + e.getMessage());
             }
         }
+        
+        setUseBroker(false); // needs to default to false, "setSkipBroker" makes this default to true
     }
 
     @Override
