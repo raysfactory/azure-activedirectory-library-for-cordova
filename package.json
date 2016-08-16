@@ -29,5 +29,8 @@
   "bugs": {
     "url": "https://github.com/AzureAD/azure-activedirectory-library-for-cordova/issues"
   },
-  "homepage": "https://github.com/AzureAD/azure-activedirectory-library-for-cordova#readme"
+  "homepage": "https://github.com/AzureAD/azure-activedirectory-library-for-cordova#readme",
+  "dependencies": {
+    "gulp": "^3.9.1"
+  }
 }
