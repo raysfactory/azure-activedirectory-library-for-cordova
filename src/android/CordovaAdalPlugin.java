@@ -194,7 +194,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         //      new AuthenticationCallback<AuthenticationResult>()...
         // )
         
-        String[] scopes = {resourceUrl};
+        String[] scopes = {clientId};
         String[] extraScopes = {""};
         String user = (userId == null ? "" : userId);
         UserIdentifier identifier = new UserIdentifier(user, UserIdentifier.UserIdentifierType.OptionalDisplayableId);
