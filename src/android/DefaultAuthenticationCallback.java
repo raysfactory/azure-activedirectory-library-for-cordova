@@ -19,6 +19,8 @@ import static com.microsoft.aad.adal.SimpleSerialization.authenticationResultToJ
  * to Cordova JS code
  */
 class DefaultAuthenticationCallback implements AuthenticationCallback<AuthenticationResult> {
+    
+    private static final String TAG = DefaultAuthenticationCallback.class.getSimpleName();
 
     /**
      * Private field that stores cordova callback context which is used to send results back to JS
@@ -43,6 +45,7 @@ class DefaultAuthenticationCallback implements AuthenticationCallback<Authentica
         JSONObject result;
         try {
             result = authenticationResultToJSON(authResult);
+            Log.d(TAG, "sending success result: " + result.toString());
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, result));
         } catch (JSONException e) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION,
