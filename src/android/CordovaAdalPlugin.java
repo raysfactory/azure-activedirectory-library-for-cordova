@@ -233,7 +233,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
 
         authContext.acquireTokenSilent(
             scopes,
-            resourceUrl,
+            clientId,
             identifier,
             callback
         );
