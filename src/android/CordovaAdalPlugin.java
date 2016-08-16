@@ -274,7 +274,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
             AuthenticationSettings.INSTANCE.setSkipBroker(!useBroker);
             
             if(internal){ // awful hack to get around the setSkipBroker inversion
-                return;
+                return true;
             }
 
             // Android 6.0 "Marshmallow" introduced a new permissions model where the user can turn on and off permissions as necessary.
