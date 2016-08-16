@@ -60,7 +60,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
             }
         }
         
-        setUseBroker(false, true); // needs to default to false, "setSkipBroker" makes this default to true
+        setUseBroker(false, true); // needs to default to false, "setSkipBroker" inverts the default to true
     }
 
     @Override
@@ -89,8 +89,10 @@ public class CordovaAdalPlugin extends CordovaPlugin {
             userId = userId.equals("null") ? null : userId;
             String extraQueryParams = args.optString(6, null);
             extraQueryParams = extraQueryParams.equals("null") ? null : extraQueryParams;
+            String policy = args.optString(7, null);
+            policy = policy.equals("null") ? null : policy;
 
-            return acquireTokenAsync(authority, validateAuthority, resourceUrl, clientId, redirectUrl, userId, extraQueryParams);
+            return acquireTokenAsync(authority, validateAuthority, resourceUrl, clientId, redirectUrl, userId, extraQueryParams, policy);
 
         } else if (action.equals("acquireTokenSilentAsync")) {
 
@@ -152,7 +154,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         return true;
     }
 
-    private boolean acquireTokenAsync(String authority, boolean validateAuthority, String resourceUrl, String clientId, String redirectUrl, String userId, String extraQueryParams) {
+    private boolean acquireTokenAsync(String authority, boolean validateAuthority, String resourceUrl, String clientId, String redirectUrl, String userId, String extraQueryParams, String policy) {
 
         final AuthenticationContext authContext;
         try{
@@ -174,11 +176,42 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         //     }
         // }
         
+        // Working B2C example:
+        // 
+        // UserIdentifier identifier = getUserInfo();
+        // String extraParams = "nux=1&" + Constants.EXTRA_QP;
+        // 
+        // mAuthContext.acquireToken(
+        //      ToDoActivity.this,
+        //      Constants.SCOPES, // []
+        //      Constants.ADDITIONAL_SCOPES, // []
+        //      policy,
+        //      Constants.CLIENT_ID,
+        //      Constants.REDIRECT_URL,
+        //      identifier,
+        //      PromptBehavior.Always,
+        //      extraParams,
+        //      new AuthenticationCallback<AuthenticationResult>()...
+        // )
+        
         String[] scopes = {resourceUrl};
         String[] extraScopes = {""};
+        String user = (userId == null ? "" : userId);
+        UserIdentifier identifier = new UserIdentifier(user, UserIdentifier.UserIdentifierType.OptionalDisplayableId);
+        DefaultAuthenticationCallback callback = new DefaultAuthenticationCallback(callbackContext);
 
-        authContext.acquireToken(this.cordova.getActivity(), scopes, extraScopes, clientId, redirectUrl,
-                SHOW_PROMPT_ALWAYS, extraQueryParams, new DefaultAuthenticationCallback(callbackContext));
+        authContext.acquireToken(
+            this.cordova.getActivity(),
+            scopes,
+            extraScopes,
+            policy,
+            clientId,
+            redirectUrl,
+            identifier,
+            SHOW_PROMPT_ALWAYS,
+            extraQueryParams,
+            callback
+        );
 
         return true;
 
