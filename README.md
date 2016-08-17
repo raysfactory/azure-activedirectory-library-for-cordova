@@ -1,3 +1,13 @@
+# ADAL Cordova Plugin Patch For B2C
+
+This is a chopped version of cordova-plugin-ms-adal that works with Azure AD B2C.
+
+- Android - ADAL library has been updated to 2.0.3-alpha and now has policies / tokens integrated correctly
+- iOS - pending resolution
+- Windows - currently no plans to update this platform's support
+
+***
+
 # Active Directory Authentication Library (ADAL) plugin for Apache Cordova apps
 
 [![Build status](https://ci.appveyor.com/api/projects/status/hslf0dq6i33p320v/branch/master?svg=true)](https://ci.appveyor.com/project/adal-for-cordova-bot/azure-activedirectory-library-for-cordova/branch/master)
