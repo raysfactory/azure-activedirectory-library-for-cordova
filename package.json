@@ -31,6 +31,11 @@
   },
   "homepage": "https://github.com/AzureAD/azure-activedirectory-library-for-cordova#readme",
   "dependencies": {
-    "gulp": "^3.9.1"
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-git": "^1.11.0",
+    "gulp-run-sequence": "^0.3.2",
+    "gulp-shell": "^0.5.2",
+    "run-sequence": "^1.2.2"
   }
 }
