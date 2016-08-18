@@ -81,9 +81,8 @@
         <source-file src="src/ios/CordovaAdalUtils.m" />
         
         <!-- <framework src="src/ios/ADAL.framework" custom="true"/> -->
-        <!-- <framework src="src/ios/ADALiOS.framework" custom="true"/> -->
-        <!-- <source-file src="src/ios/libADALiOS.a" framework="true" /> -->
-        <framework src="src/ios/ADALiOS.bundle" custom="true"/>
+        <framework src="src/ios/ADALiOS.framework" custom="true"/>
+        <source-file src="src/ios/libADALiOS.a" framework="true" />
 
         <resource-file src="src/ios/ADALiOS.entitlements" />
         <hook type="after_plugin_install" src="scripts/configureEntitlementsIos.js" />
