@@ -4,17 +4,18 @@ var shell = require("gulp-shell");
 var git = require("gulp-git");
 var runSequence = require("gulp-run-sequence");
 
-
-// To get framework file for ios:
-// 1) Build
-// 2) Right-click "libADALiOS.a" in xcode
-// 3) click "Show in Finder"
-// 4) copy source file into src/ios/
-
-// NOTE: build product will be at:
-// /Libary/Developer/Xcode/DerivedData/ADALiOS-*******/Build/Products/Debug-iphoneos/libADALiOS.a
-
-// TODO: automate process for moving product output to src/ios folder
+/**
+ * Hacked up tasks to manually build ADALiOS
+ *
+ * 1) Run "npm install" (if you haven't already), then "gulp ios-get-adal"
+ * 2) open this in xcode: "azure-activedirectory-library-for-cordova/azure-activedirectory-library-for-objc/ADALiOS.xcworkspace"
+ * 3) Build ADALiOS target
+ * 4) in xcode finder, go to: ADALiOS -> Products
+ * 5) Right click libADALiOS.a -> Show in Finder
+ *
+ * All build outputs will be in that folder. Since xcode generates hash-named
+ * folders in the output path, you'll need to copy these manually into src/ios/
+ */
 
 var ADALiOS = {
     name: "azure-activedirectory-library-for-objc",
