@@ -7,7 +7,7 @@
 #import "CordovaAdalPlugin.h"
 #import "CordovaAdalUtils.h"
 
-#import <ADAL/ADAL.h>
+#import <ADALiOS/ADAL.h>
 
 @implementation CordovaAdalPlugin
 
