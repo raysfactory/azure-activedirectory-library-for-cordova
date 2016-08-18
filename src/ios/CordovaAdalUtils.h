@@ -20,7 +20,7 @@
 + (NSMutableDictionary *)ADAuthenticationErrorToDictionary:(ADAuthenticationError *)obj;
 
 // Populates dictonary from ADTokenCacheStoreItem class instance.
-+ (NSMutableDictionary *)ADTokenCacheStoreItemToDictionary:(ADTokenCacheItem *)obj;
++ (NSMutableDictionary *)ADTokenCacheStoreItemToDictionary:(ADTokenCacheStoreItem *)obj;
 
 // Retrieves user name from Token Cache Store.
 + (NSString *)mapUserIdToUserName:(ADAuthenticationContext *)authContext

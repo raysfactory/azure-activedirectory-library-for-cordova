@@ -49,7 +49,7 @@
     return dict;
 }
 
-+ (NSMutableDictionary *)ADTokenCacheStoreItemToDictionary:(ADTokenCacheItem *)obj
++ (NSMutableDictionary *)ADTokenCacheStoreItemToDictionary:(ADTokenCacheStoreItem *)obj
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:1];
     
@@ -93,7 +93,7 @@ static id ObjectOrNull(id object)
         
         if (error == nil)
         {
-            for (ADTokenCacheItem *obj in cacheItems)
+            for (ADTokenCacheStoreItem *obj in cacheItems)
             {
                 if ([userId isEqualToString:obj.userInformation.userObjectId])
                 {
