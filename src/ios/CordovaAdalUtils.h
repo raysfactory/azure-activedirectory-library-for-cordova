@@ -6,6 +6,7 @@
 
 #import <Foundation/Foundation.h>
 #import <ADALiOS/ADAL.h>
+#import <ADALiOS/ADUserInformation.h>
 
 // Implements helper functionality for Cordova ADAL Plugin.
 @interface CordovaAdalUtils : NSObject
