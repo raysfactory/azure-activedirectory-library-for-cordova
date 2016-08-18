@@ -8,6 +8,7 @@
 #import "CordovaAdalUtils.h"
 
 #import <ADALiOS/ADAL.h>
+#import <ADALiOS/ADKeychainTokenCacheStore.h>
 
 @implementation CordovaAdalPlugin
 
@@ -42,26 +43,34 @@
         {
             NSString *authority = ObjectOrNil([command.arguments objectAtIndex:0]);
             BOOL validateAuthority = [[command.arguments objectAtIndex:1] boolValue];
-            NSString *resourceId = ObjectOrNil([command.arguments objectAtIndex:2]);
+            //NSString *resourceId = ObjectOrNil([command.arguments objectAtIndex:2]);
             NSString *clientId = ObjectOrNil([command.arguments objectAtIndex:3]);
             NSURL *redirectUri = [NSURL URLWithString:[command.arguments objectAtIndex:4]];
             NSString *userId = ObjectOrNil([command.arguments objectAtIndex:5]);
             NSString *extraQueryParameters = ObjectOrNil([command.arguments objectAtIndex:6]);
+            NSString *policy = ObjectOrNil([command.arguments objectAtIndex:7]);
 
             ADAuthenticationContext *authContext = [CordovaAdalPlugin getOrCreateAuthContext:authority
                                                                            validateAuthority:validateAuthority];
+            
+            NSArray *scopes = @[clientId];
+            NSArray *additionalScopes = @[];
+            ADUserIdentifier *identifier = [ADUserIdentifier new];
+            [identifier setValue:userId forKey:@"userId"];
 
             // TODO iOS sdk requires user name instead of guid so we should map provided id to a known user name
             userId = [CordovaAdalUtils mapUserIdToUserName:authContext
                                                     userId:userId];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [authContext
-                 acquireTokenWithResource:resourceId
+                 acquireTokenWithScopes:scopes
+                 additionalScopes:additionalScopes
                  clientId:clientId
                  redirectUri:redirectUri
+                 identifier:identifier
                  promptBehavior:AD_PROMPT_ALWAYS
-                 userId:userId
                  extraQueryParameters:extraQueryParameters
+                 policy:policy
                  completionBlock:^(ADAuthenticationResult *result) {
 
                      NSMutableDictionary *msg = [CordovaAdalUtils ADAuthenticationResultToDictionary: result];
@@ -87,9 +96,10 @@
         {
             NSString *authority = ObjectOrNil([command.arguments objectAtIndex:0]);
             BOOL validateAuthority = [[command.arguments objectAtIndex:1] boolValue];
-            NSString *resourceId = ObjectOrNil([command.arguments objectAtIndex:2]);
+            //NSString *resourceId = ObjectOrNil([command.arguments objectAtIndex:2]);
             NSString *clientId = ObjectOrNil([command.arguments objectAtIndex:3]);
             NSString *userId = ObjectOrNil([command.arguments objectAtIndex:4]);
+            NSString *policy = ObjectOrNil([command.arguments objectAtIndex:5]);
 
             ADAuthenticationContext *authContext = [CordovaAdalPlugin getOrCreateAuthContext:authority
                                                                            validateAuthority:validateAuthority];
@@ -97,11 +107,16 @@
             // TODO iOS sdk requires user name instead of guid so we should map provided id to a known user name
             userId = [CordovaAdalUtils mapUserIdToUserName:authContext
                                                     userId:userId];
+            
+            NSArray *scopes = @[clientId];
+            ADUserIdentifier *identifier = [ADUserIdentifier new];
+            [identifier setValue:userId forKey:@"userId"];
 
-            [authContext acquireTokenSilentWithResource:resourceId
-                                               clientId:clientId
+            [authContext acquireTokenSilentWithScopes:scopes
+                                            clientId:clientId
                                             redirectUri:nil
-                                                 userId:userId
+                                            identifier:identifier
+                                               policy:policy
                                         completionBlock:^(ADAuthenticationResult *result) {
                                             NSMutableDictionary *msg = [CordovaAdalUtils ADAuthenticationResultToDictionary: result];
                                             CDVCommandStatus status = (AD_SUCCEEDED != result.status) ? CDVCommandStatus_ERROR : CDVCommandStatus_OK;
@@ -125,14 +140,15 @@
         {
             ADAuthenticationError *error;
 
-            ADKeychainTokenCache* cacheStore = [ADKeychainTokenCache new];
+            ADKeychainTokenCacheStore* cacheStore = [ADKeychainTokenCacheStore new];
+            [cacheStore removeAll:&error];
 
-            NSArray *cacheItems = [cacheStore allItems:&error];
-
-            for (int i = 0; i < cacheItems.count; i++)
-            {
-                [cacheStore removeItem: cacheItems[i] error: &error];
-            }
+//            NSArray *cacheItems = [cacheStore allItems:&error];
+//
+//            for (int i = 0; i < cacheItems.count; i++)
+//            {
+//                [cacheStore removeItem: cacheItems[i] error: &error];
+//            }
 
             if (error != nil)
             {
@@ -159,7 +175,7 @@
         {
             ADAuthenticationError *error;
 
-            ADKeychainTokenCache* cacheStore = [ADKeychainTokenCache new];
+            ADKeychainTokenCacheStore* cacheStore = [ADKeychainTokenCacheStore new];
 
             //get all items from cache
             NSArray *cacheItems = [cacheStore allItems:&error];
@@ -210,35 +226,54 @@
             userId = [CordovaAdalUtils mapUserIdToUserName:authContext
                                                     userId:userId];
 
-            ADKeychainTokenCache* cacheStore = [ADKeychainTokenCache new];
-
-            //get all items from cache
-            NSArray *cacheItems = [cacheStore allItems:&error];
-
+            ADKeychainTokenCacheStore* cacheStore = [ADKeychainTokenCacheStore new];
+            
+            ADUserIdentifier* identifier = [ADUserIdentifier new];
+            [identifier setValue:userId forKey:@"userId"];
+            
+            ADTokenCacheStoreKey* key = [ADTokenCacheStoreKey new];
+            [key setValue:authority forKey:@"authority"];
+            [key setValue:itemAuthority forKey:@"itemAuthority"];
+            [key setValue:resourceId forKey:@"resourceId"];
+            [key setValue:clientId forKey:@"clientId"];
+            [key setValue:identifier forKey:@"identifier"];
+            
+            [cacheStore removeItemWithKey:key error:&error];
+            
             if (error != nil)
             {
                 @throw(error);
             }
 
-            for (ADTokenCacheItem*  item in cacheItems)
-            {
-                //remove item
-
-                if ([itemAuthority isEqualToString:[item authority]]
-                    && [userId isEqualToString:[[item userInformation] userId]]
-                    && [clientId isEqualToString:[item clientId]]
-                    // resource could be nil which is fine
-                    && ((!resourceId && ![item resource]) || [resourceId isEqualToString:[item resource]])) {
-
-                    [cacheStore removeItem:item error: &error];
-
-                    if (error != nil)
-                    {
-                        @throw(error);
-                    }
-                }
-
-            }
+            // don't need iterate through since the above call searches automatically
+            
+            //get all items from cache
+//            NSArray *cacheItems = [cacheStore allItems:&error];
+//
+//            if (error != nil)
+//            {
+//                @throw(error);
+//            }
+//
+//            for (ADTokenCacheStoreItem*  item in cacheItems)
+//            {
+//                //remove item
+//
+//                if ([itemAuthority isEqualToString:[item authority]]
+//                    && [userId isEqualToString:[[item userInformation] userId]]
+//                    && [clientId isEqualToString:[item clientId]]
+//                    // resource could be nil which is fine
+//                    && ((!resourceId && ![item resource]) || [resourceId isEqualToString:[item resource]])) {
+//
+//                    [cacheStore removeItem:item error: &error];
+//
+//                    if (error != nil)
+//                    {
+//                        @throw(error);
+//                    }
+//                }
+//
+//            }
 
             CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];

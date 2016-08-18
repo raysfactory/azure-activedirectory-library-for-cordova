@@ -32,7 +32,7 @@
 
 + (NSMutableDictionary *)ADAuthenticationResultToDictionary:(ADAuthenticationResult *)obj
 {
-    NSMutableDictionary *dict = (obj.status == AD_SUCCEEDED) ? [CordovaAdalUtils ADTokenCacheStoreItemToDictionary:obj.tokenCacheItem] : [CordovaAdalUtils ADAuthenticationErrorToDictionary:obj.error];
+    NSMutableDictionary *dict = (obj.status == AD_SUCCEEDED) ? [CordovaAdalUtils ADTokenCacheStoreItemToDictionary:obj.tokenCacheStoreItem] : [CordovaAdalUtils ADAuthenticationErrorToDictionary:obj.error];
     
     [dict setObject:[NSNumber numberWithInt:obj.status] forKey:@"statusCode"];
     
@@ -53,7 +53,7 @@
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:1];
     
-    [dict setObject:ObjectOrNull(obj.resource) forKey:@"resource"];
+    //[dict setObject:ObjectOrNull(obj.resource) forKey:@"resource"];
     [dict setObject:ObjectOrNull(obj.authority) forKey:@"authority"];
     [dict setObject:ObjectOrNull(obj.clientId) forKey:@"clientId"];
     [dict setObject:ObjectOrNull(obj.accessToken) forKey:@"accessToken"];
@@ -65,12 +65,12 @@
         [dict setObject:[NSNumber numberWithDouble:[obj.expiresOn timeIntervalSince1970] * 1000] forKey:@"expiresOn"];
     }
     
-    if (obj.userInformation)
-    {
-        //[dict setObject:[CordovaAdalUtils ADUserInformationToDictionary:obj.userInformation] forKey:@"userInfo"];
-        [dict setObject:ObjectOrNull([obj.userInformation tenantId]) forKey:@"tenantId"];
-        [dict setObject:ObjectOrNull(obj.userInformation.rawIdToken) forKey:@"idToken"];
-    }
+//    if (obj.userInformation)
+//    {
+//        //[dict setObject:[CordovaAdalUtils ADUserInformationToDictionary:obj.userInformation] forKey:@"userInfo"];
+//        [dict setObject:ObjectOrNull([obj.userInformation tenantId]) forKey:@"tenantId"];
+//        [dict setObject:ObjectOrNull(obj.userInformation.rawIdToken) forKey:@"idToken"];
+//    }
     
     return dict;
 }
@@ -83,25 +83,29 @@ static id ObjectOrNull(id object)
 + (NSString *)mapUserIdToUserName:(ADAuthenticationContext *)authContext
                            userId:(NSString *)userId
 {
-    // not nil or empty string
-    if (userId && [userId length] > 0)
-    {
-        ADAuthenticationError *error;
-        
-        ADKeychainTokenCache* cacheStore = [ADKeychainTokenCache new];
-        NSArray *cacheItems = [cacheStore allItems:&error];
-        
-        if (error == nil)
-        {
-            for (ADTokenCacheStoreItem *obj in cacheItems)
-            {
-                if ([userId isEqualToString:obj.userInformation.userObjectId])
-                {
-                    return obj.userInformation.userId;
-                }
-            }
-        }
-    }
+
+    // v3.0.0-pre.2 ADKeychainTokenCacheStore definition does not give access to 'allItems'
+    
+//    // not nil or empty string
+//    if (userId && [userId length] > 0)
+//    {
+//        ADAuthenticationError *error;
+//        
+//        ADKeychainTokenCacheStore* cacheStore = [ADKeychainTokenCacheStore new];
+//        NSArray *cacheItems = [cacheStore allItems:&error];
+//        
+//        if (error == nil)
+//        {
+//            for (ADTokenCacheStoreItem *obj in cacheItems)
+//            {
+//                if ([userId isEqualToString:obj.userInformation.userObjectId])
+//                {
+//                    return obj.userInformation.userId;
+//                }
+//            }
+//        }
+//    }
+    
     return userId;
 }
 
