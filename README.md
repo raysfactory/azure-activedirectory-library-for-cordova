@@ -4,58 +4,25 @@ This is a chopped version of cordova-plugin-ms-adal that works with Azure AD B2C
 
 - Android - ADAL library has been updated to 2.0.3-alpha and now has policies / tokens integrated correctly
 
-- iOS - ADAL library has been updated to 3.0.0-pre.2 and now works correctly with B2C, but the plugin core
-ios classes have not been updated yet so iOS is still broken
+- iOS - ADAL library has been updated to 3.0.0-pre6 and now works correctly with B2C, but the main CordovaAdalPlugin.m plugin file still has errors for token caching since ADKeychainTokenCacheStore is [no longer public](https://github.com/AzureAD/azure-activedirectory-library-for-objc/blob/3.0.0-pre6/ADALiOS/ADALiOS/public/ADAL.h) in the package
 
 - Windows - currently no plans to update this platform's support
 
 ***
 
-# Steps To Build Working ADALiOS
+# Build / Update ADALiOS.framework
 
 at the root of this project:
 - npm install
-- gulp ios-get-adal
+- gulp ios-update-adal
 
-Open this in xcode:
-- "azure-activedirectory-library-for-cordova/azure-activedirectory-library-for-objc/ADALiOS.xcworkspace"
-
-Select "ADALiOS" in the build dropdown to the left of the STOP button at the top
-
-Product -> Build
-
-NOTE: Skip this next part if the build was successful
-
----
-
-Fix any errors (the version we pulled is super alpha so there might be errors). One that I've come accross is "Logical not is only applied to the left hand side..." to fix this, change this:
-
-CHECK_PROFILE_INFO_ERROR(parts.count > 0)
-
-to this:
-
-CHECK_PROFILE_INFO_ERROR((parts.count > 0))
-
-then build again
-
----
-
-Select the file icon in xcode (first icon on the left pane)
-
-Select "MyTestiOSApp" in the build dropdown to the left of the STOP button at the top
-
-Product -> Build
-
-Fix any developer team issues
-
-Run "MyTestiOSApp" on a simulator or device, and the new ADAL library should work as expected
+See gulpfile.js for details on how this works
 
 ***
 
 # TODOs For B2C Patch
 
-- migrate .framework or .a ADALiOS file from build into plugin
-- fix any lingering issues in ios plugin bits after library is updated
+- Fix token cache issues on iOS build
 
 ***
 
