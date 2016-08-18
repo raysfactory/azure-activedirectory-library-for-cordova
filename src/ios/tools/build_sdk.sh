@@ -11,10 +11,10 @@
 BUILD_PATH="./build"
 BUILD_CONFIGURATION="Debug"
 
-proj="ADAL"
+proj="ADALiOS"
 echo "Building $proj"
-xcodebuild -workspace ADAL.xcworkspace -scheme $proj -configuration $BUILD_CONFIGURATION ARCHS="i386 x86_64" -sdk iphonesimulator VALID_ARCHS="i386 x86_64" ONLY_ACTIVE_ARCH=NO CONFIGURATION_BUILD_DIR="../build/emulator" clean build
-xcodebuild -workspace ADAL.xcworkspace -scheme $proj -configuration $BUILD_CONFIGURATION ARCHS="armv7 armv7s arm64" -sdk iphoneos VALID_ARCHS="armv7 armv7s arm64" CONFIGURATION_BUILD_DIR="../build/device" clean build
+xcodebuild -workspace ADALiOS.xcworkspace -scheme $proj -configuration $BUILD_CONFIGURATION ARCHS="i386 x86_64" -sdk iphonesimulator VALID_ARCHS="i386 x86_64" ONLY_ACTIVE_ARCH=NO CONFIGURATION_BUILD_DIR="../build/emulator" clean build
+xcodebuild -workspace ADALiOS.xcworkspace -scheme $proj -configuration $BUILD_CONFIGURATION ARCHS="armv7 armv7s arm64" -sdk iphoneos VALID_ARCHS="armv7 armv7s arm64" CONFIGURATION_BUILD_DIR="../build/device" clean build
 
 echo "Creating universal version of $proj"
 rm -rf "$BUILD_PATH/$proj.framework"
@@ -23,11 +23,11 @@ cp -R "$BUILD_PATH/emulator/$proj.framework" "$BUILD_PATH/$proj.framework"
 # signature is not valid as we are going to replace lib file => remove it
 rm -rf "$BUILD_PATH/$proj.framework/_CodeSignature"
 
-simulatorFrameworkPath="$BUILD_PATH/emulator/$proj.framework/$proj"
-deviceFrameworkPath="$BUILD_PATH/device/$proj.framework/$proj"
+simulatorFrameworkPath="$BUILD_PATH/emulator/lib$proj.a"
+deviceFrameworkPath="$BUILD_PATH/device/lib$proj.a"
 universalFrameworkPath="$BUILD_PATH/$proj.framework/$proj"
 
-lipo "$simulatorFrameworkPath" "$deviceFrameworkPath" -create -output "$universalFrameworkPath"
+lipo -create "$simulatorFrameworkPath" "$deviceFrameworkPath" -output "$universalFrameworkPath"
 lipo -info "$universalFrameworkPath"
 
 # PS. There are no resources to take care about anymore, storyboards are gone (https://github.com/AzureAD/azure-activedirectory-library-for-objc/pull/477)
