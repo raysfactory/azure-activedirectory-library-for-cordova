@@ -80,11 +80,11 @@
         <header-file src="src/ios/CordovaAdalUtils.h" />
         <source-file src="src/ios/CordovaAdalUtils.m" />
         
-        <!-- <framework src="src/ios/ADAL.framework" custom="true"/> --> 
-        <source-file src="src/ios/libADALiOS.a" framework="true" />
+        <source-file src="src/ios/libADALiOS.a" />
 
         <resource-file src="src/ios/ADALiOS.bundle" />
         <resource-file src="src/ios/ADALiOS.entitlements" />
+        
         <hook type="after_plugin_install" src="scripts/configureEntitlementsIos.js" />
         <hook type="before_plugin_uninstall" src="scripts/configureEntitlementsIos.js" />
     </platform>

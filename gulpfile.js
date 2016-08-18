@@ -20,7 +20,7 @@ var runSequence = require("gulp-run-sequence");
 var ADALiOS = {
     name: "azure-activedirectory-library-for-objc",
     path: "./src/ios/ADALiOS",
-    tag: "v3.0.0-pre.2"
+    tag: "3.0.0-pre6"
 };
 
 gulp.task("ios-clean-adal", function(){
