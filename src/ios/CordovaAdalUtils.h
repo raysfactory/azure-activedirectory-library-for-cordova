@@ -6,7 +6,6 @@
 
 #import <Foundation/Foundation.h>
 #import <ADALiOS/ADAL.h>
-#import <ADALiOS/ADUserInformation.h>
 
 // Implements helper functionality for Cordova ADAL Plugin.
 @interface CordovaAdalUtils : NSObject
@@ -15,7 +14,7 @@
 + (NSMutableDictionary *)ADAuthenticationResultToDictionary:(ADAuthenticationResult *)obj;
 
 // Populates dictonary from ADUserInformation class instance.
-+ (id)ADUserInformationToDictionary:(ADUserInformation *)obj;
+// + (id)ADUserInformationToDictionary:(ADUserInformation *)obj;
 
 // Populates dictonary from ADTokenCacheStoreItem class instance.
 + (NSMutableDictionary *)ADAuthenticationErrorToDictionary:(ADAuthenticationError *)obj;

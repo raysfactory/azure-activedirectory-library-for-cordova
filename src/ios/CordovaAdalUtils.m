@@ -8,27 +8,27 @@
 
 @implementation CordovaAdalUtils
 
-+ (id)ADUserInformationToDictionary:(ADUserInformation *)obj
-{
-    if (!obj)
-    {
-        return [NSNull null];
-    }
-    
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:1];
-    
-    [dict setObject:ObjectOrNull(obj.userId) forKey:@"userId"];
-    if ([obj userIdDisplayable])
-    {
-        [dict setObject:ObjectOrNull(obj.userId) forKey:@"displayableId"];
-    }
-    [dict setObject:ObjectOrNull([obj userId]) forKey:@"uniqueId"];
-    [dict setObject:ObjectOrNull([obj familyName]) forKey:@"familyName"];
-    [dict setObject:ObjectOrNull([obj givenName]) forKey:@"givenName"];
-    [dict setObject:ObjectOrNull([obj identityProvider]) forKey:@"identityProvider"];
-    [dict setObject:ObjectOrNull([obj tenantId]) forKey:@"tenantId"];
-    return dict;
-}
+// + (id)ADUserInformationToDictionary:(ADUserInformation *)obj
+// {
+//     if (!obj)
+//     {
+//         return [NSNull null];
+//     }
+//     
+//     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:1];
+//     
+//     [dict setObject:ObjectOrNull(obj.userId) forKey:@"userId"];
+//     if ([obj userIdDisplayable])
+//     {
+//         [dict setObject:ObjectOrNull(obj.userId) forKey:@"displayableId"];
+//     }
+//     [dict setObject:ObjectOrNull([obj userId]) forKey:@"uniqueId"];
+//     [dict setObject:ObjectOrNull([obj familyName]) forKey:@"familyName"];
+//     [dict setObject:ObjectOrNull([obj givenName]) forKey:@"givenName"];
+//     [dict setObject:ObjectOrNull([obj identityProvider]) forKey:@"identityProvider"];
+//     [dict setObject:ObjectOrNull([obj tenantId]) forKey:@"tenantId"];
+//     return dict;
+// }
 
 + (NSMutableDictionary *)ADAuthenticationResultToDictionary:(ADAuthenticationResult *)obj
 {
@@ -67,7 +67,7 @@
     
     if (obj.userInformation)
     {
-        [dict setObject:[CordovaAdalUtils ADUserInformationToDictionary:obj.userInformation] forKey:@"userInfo"];
+        //[dict setObject:[CordovaAdalUtils ADUserInformationToDictionary:obj.userInformation] forKey:@"userInfo"];
         [dict setObject:ObjectOrNull([obj.userInformation tenantId]) forKey:@"tenantId"];
         [dict setObject:ObjectOrNull(obj.userInformation.rawIdToken) forKey:@"idToken"];
     }
