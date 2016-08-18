@@ -80,7 +80,7 @@
         <header-file src="src/ios/CordovaAdalUtils.h" />
         <source-file src="src/ios/CordovaAdalUtils.m" />
         
-        <source-file src="src/ios/libADALiOS.a" />
+        <source-file src="src/ios/libADALiOS.a" compiler-flags="-fno-objc-arc" />
 
         <resource-file src="src/ios/ADALiOS.bundle" />
         <resource-file src="src/ios/ADALiOS.entitlements" />
