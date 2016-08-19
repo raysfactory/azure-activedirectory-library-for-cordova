@@ -27,6 +27,7 @@ simulatorFrameworkPath="$BUILD_PATH/emulator/lib$proj.a"
 deviceFrameworkPath="$BUILD_PATH/device/lib$proj.a"
 universalFrameworkPath="$BUILD_PATH/$proj.framework/$proj"
 
+echo "Merging universal build..."
 lipo -create "$simulatorFrameworkPath" "$deviceFrameworkPath" -output "$universalFrameworkPath"
 lipo -info "$universalFrameworkPath"
 

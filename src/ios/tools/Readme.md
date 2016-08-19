@@ -1,4 +1,14 @@
-#Instructions to re-build *ADAL.framework*
+# Instructions to re-build *ADAL.framework*
+
+Note: this process has been automated via gulp
+ 
+To run with gulp, use these commands in terminal at the root of the project:
+- npm install
+- gulp ios-update-adal
+
+***
+
+## Old Method
 
 1. Clone or download [azure-activedirectory-library-for-objc](https://github.com/AzureAD/azure-activedirectory-library-for-objc)
 2. Navigate to `azure-activedirectory-library-for-objc`and open *ADAL.xcworkspace* in *Xcode*
