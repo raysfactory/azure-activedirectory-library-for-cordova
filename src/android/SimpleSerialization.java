@@ -55,7 +55,7 @@ class SimpleSerialization {
         //authResult.put("accessToken", authenticationResult.getAccessToken());
         //authResult.put("accessTokenType", authenticationResult.getAccessTokenType());
         authResult.put("expiresOn", authenticationResult.getExpiresOn());
-        authResult.put("idToken", authenticationResult.getToken());
+        authResult.put("token", authenticationResult.getToken());
         authResult.put("isMultipleResourceRefreshToken", authenticationResult.getIsMultiResourceRefreshToken());
         authResult.put("statusCode", authenticationResult.getStatus());
         authResult.put("tenantId", authenticationResult.getTenantId());

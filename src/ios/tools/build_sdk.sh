@@ -31,6 +31,7 @@ echo "Merging universal build..."
 lipo -create "$simulatorFrameworkPath" "$deviceFrameworkPath" -output "$universalFrameworkPath"
 lipo -info "$universalFrameworkPath"
 
-# PS. There are no resources to take care about anymore, storyboards are gone (https://github.com/AzureAD/azure-activedirectory-library-for-objc/pull/477)
+# (OLD ->) PS. There are no resources to take care about anymore, storyboards are gone (https://github.com/AzureAD/azure-activedirectory-library-for-objc/pull/477)
+# TODO: with the ADAL library upgrade, the bundle is now required - need to dump that into build process
 
 echo "Done: '$BUILD_PATH/$proj.framework'"
