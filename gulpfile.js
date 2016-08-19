@@ -11,7 +11,7 @@ var runSequence = require("gulp-run-sequence");
  * 2) gulp ios-update-adal
  */
 
-var ADALiOS = {
+var adios = {
     dir: "azure-activedirectory-library-for-objc",
     tag: "3.0.0-pre6",
     script: "build_sdk.sh",
@@ -19,16 +19,16 @@ var ADALiOS = {
 };
 
 gulp.task("ios-clean-adal", function(){
-    return del(ADALiOS.dir);
+    return del(adios.dir);
 });
 
 gulp.task("ios-pull-adal", function(done){
-    git.clone("https://github.com/AzureAD/" + ADALiOS.dir + ".git", null, done);
+    git.clone("https://github.com/AzureAD/" + adios.dir + ".git", null, done);
 });
 
 gulp.task("ios-checkout-adal", function(done){
-    if(ADALiOS.tag){
-        git.checkout("tags/" + ADALiOS.tag, {cwd: ADALiOS.dir}, done);
+    if(adios.tag){
+        git.checkout("tags/" + adios.tag, {cwd: adios.dir}, done);
     } else {
         console.log("no tag found, skipping checkout");
         done();
@@ -45,11 +45,11 @@ gulp.task("ios-get-adal", function(done){
 });
 
 gulp.task("ios-move-script", function(){
-    return gulp.src("./src/ios/tools/" + ADALiOS.script)
-    .pipe(gulp.dest("./" + ADALiOS.dir));
+    return gulp.src("./src/ios/tools/" + adios.script)
+    .pipe(gulp.dest("./" + adios.dir));
 });
 
-gulp.task("ios-run-script", shell.task("./" + ADALiOS.script, {cwd: ADALiOS.dir}));
+gulp.task("ios-run-script", shell.task("./" + adios.script, {cwd: adios.dir}));
 
 gulp.task("ios-script", function(done){
     runSequence(
@@ -60,8 +60,8 @@ gulp.task("ios-script", function(done){
 });
 
 gulp.task("ios-transfer-adal", function(){
-    return gulp.src("./" + ADALiOS.dir + "/build/" + ADALiOS.framework + "/*", {read: false})
-    .pipe(gulp.dest("./src/ios/" + ADALiOS.framework));
+    return gulp.src("./" + adios.dir + "/build/" + adios.framework)
+    .pipe(gulp.dest("./src/ios/" + adios.framework));
 });
 
 gulp.task("ios-update-adal", function(done){
