@@ -70,12 +70,12 @@
         [dict setObject:[NSNumber numberWithDouble:[obj.expiresOn timeIntervalSince1970] * 1000] forKey:@"expiresOn"];
     }
     
-//    if (obj.userInformation)
-//    {
-//        //[dict setObject:[CordovaAdalUtils ADUserInformationToDictionary:obj.userInformation] forKey:@"userInfo"];
-//        [dict setObject:ObjectOrNull([obj.userInformation tenantId]) forKey:@"tenantId"];
-//        [dict setObject:ObjectOrNull(obj.userInformation.rawIdToken) forKey:@"idToken"];
-//    }
+   // if (obj.profileInfo)
+   // {
+   //     //[dict setObject:[CordovaAdalUtils ADUserInformationToDictionary:obj.userInformation] forKey:@"userInfo"];
+   //     [dict setObject:ObjectOrNull([obj.profileInfo tenantId]) forKey:@"tenantId"];
+   //     [dict setObject:ObjectOrNull(obj.profileInfo.rawIdToken) forKey:@"idToken"];
+   // }
     
     return dict;
 }
