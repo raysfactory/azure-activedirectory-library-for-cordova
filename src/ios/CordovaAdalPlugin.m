@@ -95,10 +95,9 @@
         {
             NSString *authority = ObjectOrNil([command.arguments objectAtIndex:0]);
             BOOL validateAuthority = [[command.arguments objectAtIndex:1] boolValue];
-            //NSString *resourceId = ObjectOrNil([command.arguments objectAtIndex:2]);
+            NSString *resourceId = ObjectOrNil([command.arguments objectAtIndex:2]);
             NSString *clientId = ObjectOrNil([command.arguments objectAtIndex:3]);
             NSString *userId = ObjectOrNil([command.arguments objectAtIndex:4]);
-            NSString *policy = ObjectOrNil([command.arguments objectAtIndex:5]);
 
             ADAuthenticationContext *authContext = [CordovaAdalPlugin getOrCreateAuthContext:authority
                                                                            validateAuthority:validateAuthority];
@@ -115,7 +114,6 @@
                                             clientId:clientId
                                             redirectUri:nil
                                             identifier:identifier
-                                               policy:policy
                                         completionBlock:^(ADAuthenticationResult *result) {
                                             NSMutableDictionary *msg = [CordovaAdalUtils ADAuthenticationResultToDictionary: result];
                                             CDVCommandStatus status = (AD_SUCCEEDED != result.status) ? CDVCommandStatus_ERROR : CDVCommandStatus_OK;
