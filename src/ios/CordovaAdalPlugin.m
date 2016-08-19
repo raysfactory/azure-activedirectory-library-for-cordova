@@ -107,13 +107,10 @@
                                                     userId:userId];
             
             NSArray *scopes = @[clientId];
-            ADUserIdentifier *identifier = [ADUserIdentifier new];
-            [identifier setValue:userId forKey:@"userId"];
 
             [authContext acquireTokenSilentWithScopes:scopes
                                             clientId:clientId
                                             redirectUri:nil
-                                            identifier:identifier
                                         completionBlock:^(ADAuthenticationResult *result) {
                                             NSMutableDictionary *msg = [CordovaAdalUtils ADAuthenticationResultToDictionary: result];
                                             CDVCommandStatus status = (AD_SUCCEEDED != result.status) ? CDVCommandStatus_ERROR : CDVCommandStatus_OK;
