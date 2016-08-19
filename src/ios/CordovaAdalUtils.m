@@ -8,27 +8,27 @@
 
 @implementation CordovaAdalUtils
 
-// + (id)ADUserInformationToDictionary:(ADUserInformation *)obj
-// {
-//     if (!obj)
-//     {
-//         return [NSNull null];
-//     }
-//     
-//     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:1];
-//     
-//     [dict setObject:ObjectOrNull(obj.userId) forKey:@"userId"];
+ + (id)ADUserInformationToDictionary:(ADProfileInfo *)obj
+ {
+     if (!obj)
+     {
+         return [NSNull null];
+     }
+     
+     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:1];
+     
+     [dict setObject:ObjectOrNull(obj.username) forKey:@"userId"];
 //     if ([obj userIdDisplayable])
 //     {
-//         [dict setObject:ObjectOrNull(obj.userId) forKey:@"displayableId"];
+//         [dict setObject:ObjectOrNull(obj.friendlyName) forKey:@"displayableId"];
 //     }
-//     [dict setObject:ObjectOrNull([obj userId]) forKey:@"uniqueId"];
-//     [dict setObject:ObjectOrNull([obj familyName]) forKey:@"familyName"];
-//     [dict setObject:ObjectOrNull([obj givenName]) forKey:@"givenName"];
-//     [dict setObject:ObjectOrNull([obj identityProvider]) forKey:@"identityProvider"];
-//     [dict setObject:ObjectOrNull([obj tenantId]) forKey:@"tenantId"];
-//     return dict;
-// }
+//   [dict setObject:ObjectOrNull([obj userId]) forKey:@"uniqueId"];
+     [dict setObject:ObjectOrNull([obj friendlyName]) forKey:@"familyName"];
+     //[dict setObject:ObjectOrNull([obj givenName]) forKey:@"givenName"];
+     //[dict setObject:ObjectOrNull([obj identityProvider]) forKey:@"identityProvider"];
+     [dict setObject:ObjectOrNull([obj tenantId]) forKey:@"tenantId"];
+     return dict;
+ }
 
 + (NSMutableDictionary *)ADAuthenticationResultToDictionary:(ADAuthenticationResult *)obj
 {
@@ -70,12 +70,12 @@
         [dict setObject:[NSNumber numberWithDouble:[obj.expiresOn timeIntervalSince1970] * 1000] forKey:@"expiresOn"];
     }
     
-   // if (obj.profileInfo)
-   // {
-   //     //[dict setObject:[CordovaAdalUtils ADUserInformationToDictionary:obj.userInformation] forKey:@"userInfo"];
-   //     [dict setObject:ObjectOrNull([obj.profileInfo tenantId]) forKey:@"tenantId"];
-   //     [dict setObject:ObjectOrNull(obj.profileInfo.rawIdToken) forKey:@"idToken"];
-   // }
+    if (obj.profileInfo)
+    {
+        [dict setObject:[CordovaAdalUtils ADUserInformationToDictionary:obj.profileInfo] forKey:@"userInfo"];
+        [dict setObject:ObjectOrNull([obj.profileInfo tenantId]) forKey:@"tenantId"];
+        [dict setObject:ObjectOrNull(obj.profileInfo.rawProfileInfo) forKey:@"idToken"];
+    }
     
     return dict;
 }
@@ -88,28 +88,25 @@ static id ObjectOrNull(id object)
 + (NSString *)mapUserIdToUserName:(ADAuthenticationContext *)authContext
                            userId:(NSString *)userId
 {
-
-    // v3.0.0-pre.2 ADKeychainTokenCacheStore definition does not give access to 'allItems'
     
-//    // not nil or empty string
-//    if (userId && [userId length] > 0)
-//    {
-//        ADAuthenticationError *error;
-//        
-//        ADKeychainTokenCacheStore* cacheStore = [ADKeychainTokenCacheStore new];
-//        NSArray *cacheItems = [cacheStore allItems:&error];
-//        
-//        if (error == nil)
-//        {
-//            for (ADTokenCacheStoreItem *obj in cacheItems)
-//            {
-//                if ([userId isEqualToString:obj.userInformation.userObjectId])
-//                {
-//                    return obj.userInformation.userId;
-//                }
-//            }
-//        }
-//    }
+    // not nil or empty string
+    if (userId && [userId length] > 0)
+    {
+        ADAuthenticationError *error;
+        
+        NSArray *cacheItems = [authContext.tokenCacheStore allItems:&error];
+        
+        if (error == nil)
+        {
+            for (ADTokenCacheStoreItem *obj in cacheItems)
+            {
+                if ([userId isEqualToString:obj.userCacheKey])
+                {
+                    return obj.userCacheKey;
+                }
+            }
+        }
+    }
     
     return userId;
 }
