@@ -57,6 +57,7 @@
     [dict setObject:ObjectOrNull(obj.clientId) forKey:@"clientId"];
     [dict setObject:ObjectOrNull(obj.tokenType) forKey:@"tokenType"];
     [dict setObject:ObjectOrNull(obj.refreshToken) forKey:@"refreshToken"];
+    [dict setObject:ObjectOrNull(obj.policy) forKey:@"policy"];
     [dict setObject:[NSNumber numberWithBool:obj.refreshToken != nil] forKey:@"isMultipleResourceRefreshToken"];
     
     if(obj.token) // could be nil

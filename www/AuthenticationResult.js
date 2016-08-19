@@ -8,6 +8,7 @@ var UserInfo = require('./UserInfo');
  * Represents the result token acquisition operation.
  */
 function AuthenticationResult(authResult) {
+    console.log("AuthenticationResult seed: " + JSON.stringify(authResult, null, "\t"));
     this.token = authResult.token; // updated to sync both android and ios
     this.accessToken = authResult.accessToken;
     this.accessTokenType = authResult.accessTokenType;
@@ -16,7 +17,6 @@ function AuthenticationResult(authResult) {
     this.status = authResult.status;
     this.statusCode = authResult.statusCode;
     this.tenantId = authResult.tenantId;
-
     this.userInfo = authResult.idToken ? UserInfo.fromJWT(authResult.idToken) : null;
 }
 
