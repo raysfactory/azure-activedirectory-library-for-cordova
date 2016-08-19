@@ -4,13 +4,11 @@ This is a chopped version of cordova-plugin-ms-adal that works with Azure AD B2C
 
 - Android - ADAL library has been updated to 2.0.3-alpha and now has policies / tokens integrated correctly
 
-- iOS - ADAL library has been updated to 3.0.0-pre6 and now works correctly with B2C, but the main CordovaAdalPlugin.m plugin file still has errors for token caching since ADKeychainTokenCacheStore is [no longer public](https://github.com/AzureAD/azure-activedirectory-library-for-objc/blob/3.0.0-pre6/ADALiOS/ADALiOS/public/ADAL.h) in the package
+- iOS - ADAL library has been updated to 3.0.0-pre6 and works correctly with B2C, but token caching is currently broken - in the meantime, users will always be prompted with the webview overlay.
 
 - Windows - currently no plans to update this platform's support
 
-***
-
-# Build / Update ADALiOS.framework
+## Build / Update ADALiOS.framework
 
 at the root of this project:
 - npm install
@@ -18,13 +16,9 @@ at the root of this project:
 
 See gulpfile.js for details on how this works
 
-***
-
-# TODOs For B2C Patch
+## TODOs For B2C Patch
 
 - Fix token cache issues on iOS build
-
-***
 
 # End B2C Patch
 
