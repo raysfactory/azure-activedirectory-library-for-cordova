@@ -8,10 +8,10 @@ var UserInfo = require('./UserInfo');
  * Represents the result token acquisition operation.
  */
 function AuthenticationResult(authResult) {
+    this.token = authResult.token; // updated to sync both android and ios
     this.accessToken = authResult.accessToken;
     this.accessTokenType = authResult.accessTokenType;
     this.expiresOn = authResult.expiresOn ? new Date(authResult.expiresOn) : null;
-    this.idToken = authResult.idToken;
     this.isMultipleResourceRefreshToken = authResult.isMultipleResourceRefreshToken;
     this.status = authResult.status;
     this.statusCode = authResult.statusCode;
