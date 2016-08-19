@@ -53,12 +53,16 @@
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:1];
     
-    //[dict setObject:ObjectOrNull(obj.resource) forKey:@"resource"];
     [dict setObject:ObjectOrNull(obj.authority) forKey:@"authority"];
     [dict setObject:ObjectOrNull(obj.clientId) forKey:@"clientId"];
-    [dict setObject:ObjectOrNull(obj.token) forKey:@"token"];
-    [dict setObject:ObjectOrNull(obj.tokenType) forKey:@"accessTokenType"];
+    [dict setObject:ObjectOrNull(obj.tokenType) forKey:@"tokenType"];
+    [dict setObject:ObjectOrNull(obj.refreshToken) forKey:@"refreshToken"];
     [dict setObject:[NSNumber numberWithBool:obj.refreshToken != nil] forKey:@"isMultipleResourceRefreshToken"];
+    
+    if(obj.token) // could be nil
+    {
+        [dict setObject:ObjectOrNull(obj.token) forKey:@"token"];
+    }
     
     if (obj.expiresOn) // could be nil
     {
