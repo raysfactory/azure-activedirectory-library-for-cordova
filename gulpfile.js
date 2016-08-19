@@ -60,8 +60,8 @@ gulp.task("ios-script", function(done){
 });
 
 gulp.task("ios-transfer-adal", function(){
-    return gulp.src("./" + adios.dir + "/build/" + adios.framework)
-    .pipe(gulp.dest("./src/ios/" + adios.framework));
+    return gulp.src(adios.dir + "/build/" + adios.framework + "/*")
+    .pipe(gulp.dest("src/ios/test"));
 });
 
 gulp.task("ios-update-adal", function(done){
