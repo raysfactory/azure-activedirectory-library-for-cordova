@@ -8,7 +8,6 @@
 #import "CordovaAdalUtils.h"
 
 #import <ADALiOS/ADAL.h>
-#import <ADALiOS/ADKeychainTokenCacheStore.h>
 
 @implementation CordovaAdalPlugin
 
@@ -139,9 +138,15 @@
         @try
         {
             ADAuthenticationError *error;
+            
+            NSString *authority = ObjectOrNil([command.arguments objectAtIndex:0]);
+            BOOL validateAuthority = [[command.arguments objectAtIndex:1] boolValue];
+            
+            ADAuthenticationContext *authContext = [CordovaAdalPlugin getOrCreateAuthContext:authority
+                                                                           validateAuthority:validateAuthority];
 
-            ADKeychainTokenCacheStore* cacheStore = [ADKeychainTokenCacheStore new];
-            [cacheStore removeAll:&error];
+            
+            [authContext.tokenCacheStore removeAll:&error];
 
 //            NSArray *cacheItems = [cacheStore allItems:&error];
 //
@@ -175,10 +180,14 @@
         {
             ADAuthenticationError *error;
 
-            ADKeychainTokenCacheStore* cacheStore = [ADKeychainTokenCacheStore new];
+            NSString *authority = ObjectOrNil([command.arguments objectAtIndex:0]);
+            BOOL validateAuthority = [[command.arguments objectAtIndex:1] boolValue];
+            
+            ADAuthenticationContext *authContext = [CordovaAdalPlugin getOrCreateAuthContext:authority
+                                                                           validateAuthority:validateAuthority];
 
             //get all items from cache
-            NSArray *cacheItems = [cacheStore allItems:&error];
+            NSArray *cacheItems = [authContext.tokenCacheStore allItems:&error];
 
             NSMutableArray *items = [NSMutableArray arrayWithCapacity:cacheItems.count];
 
@@ -225,8 +234,6 @@
             // TODO iOS sdk requires user name instead of guid so we should map provided id to a known user name
             userId = [CordovaAdalUtils mapUserIdToUserName:authContext
                                                     userId:userId];
-
-            ADKeychainTokenCacheStore* cacheStore = [ADKeychainTokenCacheStore new];
             
             ADUserIdentifier* identifier = [ADUserIdentifier new];
             [identifier setValue:userId forKey:@"userId"];
@@ -238,7 +245,7 @@
             [key setValue:clientId forKey:@"clientId"];
             [key setValue:identifier forKey:@"identifier"];
             
-            [cacheStore removeItemWithKey:key error:&error];
+            [authContext.tokenCacheStore removeItemWithKey:key error:&error];
             
             if (error != nil)
             {

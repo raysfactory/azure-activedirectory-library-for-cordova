@@ -56,8 +56,8 @@
     //[dict setObject:ObjectOrNull(obj.resource) forKey:@"resource"];
     [dict setObject:ObjectOrNull(obj.authority) forKey:@"authority"];
     [dict setObject:ObjectOrNull(obj.clientId) forKey:@"clientId"];
-    [dict setObject:ObjectOrNull(obj.accessToken) forKey:@"accessToken"];
-    [dict setObject:ObjectOrNull(obj.accessTokenType) forKey:@"accessTokenType"];
+    [dict setObject:ObjectOrNull(obj.token) forKey:@"accessToken"];
+    [dict setObject:ObjectOrNull(obj.tokenType) forKey:@"accessTokenType"];
     [dict setObject:[NSNumber numberWithBool:obj.refreshToken != nil] forKey:@"isMultipleResourceRefreshToken"];
     
     if (obj.expiresOn) // could be nil
