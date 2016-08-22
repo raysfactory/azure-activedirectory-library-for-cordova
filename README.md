@@ -2,7 +2,7 @@
 
 This is a chopped version of [cordova-plugin-ms-adal](https://github.com/AzureAD/azure-activedirectory-library-for-cordova) that works with Azure AD B2C.
 
-Be forewarned that this patch is _barely_ working, with minimal "happy-path" testing, and I do not intend to maintain it after the original plugin libraries get updated.
+Be forewarned that this patch is _barely_ working, with minimal "happy-path" testing, and I do not intend to maintain it after the [original plugin libraries get updated](https://github.com/AzureAD/azure-activedirectory-library-for-cordova/issues/85#issuecomment-240819239).
 
 - Android - ADAL library has been updated to 2.0.3-alpha and now has policies / tokens integrated correctly
 
