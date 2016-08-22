@@ -18,6 +18,8 @@ Via cordova CLI:
 cordova plugin add https://github.com/jospete/azure-activedirectory-library-for-cordova
 ```
 
+**NOTE** - this patch will conflict with the original plugin if the original already exists in your project. The original plugin must be **replaced** by this one. This plugin is tagged as "cordova-plugin-ms-adal-b2c-patch", so you should delete "cordova-plugin-ms-adal" in your /plugins directory if that exists.
+
 ## B2C Sample Usage
 
 ```javascript
