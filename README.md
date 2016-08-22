@@ -10,6 +10,14 @@ Be forewarned that this patch is _barely_ working, with minimal "happy-path" tes
 
 - Windows - currently no plans to update this platform's support
 
+## Installation
+
+Via cordova CLI:
+
+```
+cordova plugin add https://github.com/jospete/azure-activedirectory-library-for-cordova
+```
+
 ## B2C Sample Usage
 
 ```javascript
