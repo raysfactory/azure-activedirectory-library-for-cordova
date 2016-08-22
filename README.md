@@ -6,9 +6,87 @@ Be forewarned that this patch is _barely_ working, with minimal "happy-path" tes
 
 - Android - ADAL library has been updated to 2.0.3-alpha and now has policies / tokens integrated correctly
 
-- iOS - ADAL library has been updated to 3.0.0-pre6 and works correctly with B2C, but token caching is currently broken - in the meantime, users will always be prompted with the webview overlay.
+- iOS - ADAL library has been updated to 3.0.0-pre6 and works correctly with B2C, token caching now works as well
 
 - Windows - currently no plans to update this platform's support
+
+## B2C Sample Usage
+
+```javascript
+var params = {
+    redirectUrl: "urn:ietf:wg:oauth:2.0:oob", // default to use
+    extraQueryParams: "nux=1", // all the updated libraries have this
+    authority: "https://login.microsoftonline.com/[YOUR_TENANT]",
+    clientId: "[YOUR_CLIENT_ID]", // also sometimes called "App ID", looks something like this: f6dad784-f7d3-****-92bd-******
+    policy: "[YOUR_SIGNIN_POLICY]",
+    userId: null, // don't need to track this in most cases
+    resourceUrl: null // legacy - no longer needed in the updated ADAL libraries
+};
+
+var authContext = new window.Microsoft.ADAL.AuthenticationContext(params.authority);
+
+// Use this to do a loud sign in initially...
+var acquireTokenAsync = function(){
+    return authContext.acquireTokenAsync(
+        params.resourceUrl,
+        params.clientId,
+        params.redirectUrl,
+        params.userId,
+        params.extraQueryParams,
+        params.policy
+    );
+};
+
+// Use this when the user has already signed in recently...
+var acquireTokenSilentAsync = function(){
+    return authContext.acquireTokenSilentAsync(
+        params.resourceUrl,
+        params.clientId,
+        params.userId,
+        params.redirectUrl,
+        params.policy
+    );
+};
+
+// Authentication Flow...
+var authenticate = function(clear){
+    
+    if(clear){
+        console.log("clearing cache before login...");
+        authContext.tokenCache.clear();
+    }
+
+    var deferred = $q.defer();
+    
+    var loginSuccess = function(jwt){
+        $http.defaults.headers.common.Authorization = "Bearer " + jwt.token;
+        deferred.resolve(jwt);
+    };
+    
+    var loginError = function(error){
+        deferred.reject(error);
+    };
+
+    var loudSignIn = function(){
+        acquireTokenAsync().then(loginSuccess, loginError);
+    };
+
+    var parseCache = function(items){
+
+        if(items.length > 0){
+            console.log("cache has items, setting new authority...");
+            acquireTokenSilentAsync().then(loginSuccess, loudSignIn);
+            
+        } else { // cache is empty, attempt loud sign in
+            loudSignIn(); 
+        }
+    };
+
+    authContext.tokenCache.readItems().then(parseCache, loudSignIn);
+
+    return deferred.promise;
+};
+```
 
 ## Build / Update ADALiOS.framework
 
@@ -19,8 +97,6 @@ at the root of this project:
 See gulpfile.js for details on how this works
 
 ## TODOs For B2C Patch
-
-- Fix token cache issues on iOS build
 
 # End B2C Patch
 
