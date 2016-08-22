@@ -24,6 +24,7 @@ var params = {
 };
 
 var authContext = new window.Microsoft.ADAL.AuthenticationContext(params.authority);
+var authorizationHeader = null; // use this to make API requests after login
 
 // Use this to do a loud sign in initially...
 var acquireTokenAsync = function(){
@@ -60,7 +61,7 @@ var authenticate = function(clear){
     
     var loginSuccess = function(jwt){
         console.log("login success: " + JSON.stringify(jwt, null, "\t"));
-        $http.defaults.headers.common.Authorization = "Bearer " + jwt.token;
+        authorizationHeader = "Bearer " + jwt.token;
         deferred.resolve(jwt);
     };
     
