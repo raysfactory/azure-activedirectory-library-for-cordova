@@ -54,7 +54,7 @@
             
             NSArray *scopes = @[clientId];
             NSArray *additionalScopes = @[];
-            ADUserIdentifier *identifier = [ADUserIdentifier identifierWithId:userId type:OptionalDisplayableId];
+            ADUserIdentifier *identifier = [ADUserIdentifier identifierWithId:userId];
             
             // TODO iOS sdk requires user name instead of guid so we should map provided id to a known user name
             userId = [CordovaAdalUtils mapUserIdToUserName:authContext
