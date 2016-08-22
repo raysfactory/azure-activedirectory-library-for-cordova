@@ -97,23 +97,24 @@
             NSString *resourceId = ObjectOrNil([command.arguments objectAtIndex:2]);
             NSString *clientId = ObjectOrNil([command.arguments objectAtIndex:3]);
             NSString *userId = ObjectOrNil([command.arguments objectAtIndex:4]);
+            NSURL *redirectUri = ObjectOrNil([command.arguments objectAtIndex:5]);
+            NSString *policy = ObjectOrNil([command.arguments objectAtIndex:6]);
             
             ADAuthenticationContext *authContext = [CordovaAdalPlugin getOrCreateAuthContext:authority
                                                                            validateAuthority:validateAuthority];
             
             // TODO iOS sdk requires user name instead of guid so we should map provided id to a known user name
-            userId = [CordovaAdalUtils mapUserIdToUserName:authContext
-                                                    userId:userId];
+//            userId = [CordovaAdalUtils mapUserIdToUserName:authContext
+//                                                    userId:userId];
             
             NSArray *scopes = @[clientId];
-            
-            
-            ADUserIdentifier *identifier = [ADUserIdentifier identifierWithId:userId type:OptionalDisplayableId];
+            ADUserIdentifier *identifier = [ADUserIdentifier identifierWithId:userId];
             
             [authContext acquireTokenSilentWithScopes:scopes
                                              clientId:clientId
-                                          redirectUri:nil
+                                          redirectUri:redirectUri
                                            identifier:identifier
+                                               policy:policy
                                       completionBlock:^(ADAuthenticationResult *result) {
                                           NSMutableDictionary *msg = [CordovaAdalUtils ADAuthenticationResultToDictionary: result];
                                           CDVCommandStatus status = (AD_SUCCEEDED != result.status) ? CDVCommandStatus_ERROR : CDVCommandStatus_OK;

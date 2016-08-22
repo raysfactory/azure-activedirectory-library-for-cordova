@@ -101,17 +101,19 @@ AuthenticationContext.prototype.acquireTokenAsync = function (resourceUrl, clien
  *
  * @param   {String}  resourceUrl Resource identifier
  * @param   {String}  clientId    Client (application) identifier
- * @param   {String}  userId      User identifier (optional)
+ * @param   {String=}  userId      User identifier (optional)
+ * @param   {String=}  redirectUri redirect url (optional)
+ * @param   {String=}  policy      custom policy (optional)
  *
  * @returns {Promise} Promise either fulfilled with AuthenticationResult object or rejected with error
  */
-AuthenticationContext.prototype.acquireTokenSilentAsync = function (resourceUrl, clientId, userId) {
+AuthenticationContext.prototype.acquireTokenSilentAsync = function (resourceUrl, clientId, userId, redirectUri, policy) {
 
     checkArgs('ssS', 'AuthenticationContext.acquireTokenSilentAsync', arguments);
 
     var d = new Deferred();
 
-    bridge.executeNativeMethod('acquireTokenSilentAsync', [this.authority, this.validateAuthority, resourceUrl, clientId, userId])
+    bridge.executeNativeMethod('acquireTokenSilentAsync', [this.authority, this.validateAuthority, resourceUrl, clientId, userId, redirectUri, policy])
     .then(function(authResult){
         d.resolve(new AuthenticationResult(authResult));
     }, function(err) {
