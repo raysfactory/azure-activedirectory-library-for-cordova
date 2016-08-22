@@ -1,6 +1,6 @@
 # ADAL Cordova Plugin Patch For B2C
 
-This is a chopped version of cordova-plugin-ms-adal that works with Azure AD B2C.
+This is a chopped version of [cordova-plugin-ms-adal](https://github.com/AzureAD/azure-activedirectory-library-for-cordova) that works with Azure AD B2C.
 
 Be forewarned that this patch is _barely_ working, with minimal "happy-path" testing, and I do not intend to maintain it after the original plugin libraries get updated.
 
