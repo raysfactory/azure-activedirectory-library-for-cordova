@@ -59,11 +59,13 @@ var authenticate = function(clear){
     var deferred = $q.defer();
     
     var loginSuccess = function(jwt){
+        console.log("login success: " + JSON.stringify(jwt, null, "\t"));
         $http.defaults.headers.common.Authorization = "Bearer " + jwt.token;
         deferred.resolve(jwt);
     };
     
     var loginError = function(error){
+        console.log("login error: " + JSON.stringify(error, null, "\t"));
         deferred.reject(error);
     };
 
@@ -74,10 +76,11 @@ var authenticate = function(clear){
     var parseCache = function(items){
 
         if(items.length > 0){
-            console.log("cache has items, setting new authority...");
+            console.log("cache has items, attempting silent login");
             acquireTokenSilentAsync().then(loginSuccess, loudSignIn);
             
-        } else { // cache is empty, attempt loud sign in
+        } else {
+            console.log("cache is empty, attempting loud sign in");
             loudSignIn(); 
         }
     };
