@@ -13,6 +13,8 @@ Be forewarned that this patch is _barely_ working, with minimal "happy-path" tes
 ## B2C Sample Usage
 
 ```javascript
+require("Q");
+
 var params = {
     redirectUrl: "urn:ietf:wg:oauth:2.0:oob", // default to use
     extraQueryParams: "nux=1", // all the updated libraries have this
@@ -57,7 +59,7 @@ var authenticate = function(clear){
         authContext.tokenCache.clear();
     }
 
-    var deferred = $q.defer();
+    var deferred = Q.defer();
     
     var loginSuccess = function(jwt){
         console.log("login success: " + JSON.stringify(jwt, null, "\t"));
