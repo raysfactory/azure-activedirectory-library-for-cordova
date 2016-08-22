@@ -97,7 +97,7 @@
             NSString *resourceId = ObjectOrNil([command.arguments objectAtIndex:2]);
             NSString *clientId = ObjectOrNil([command.arguments objectAtIndex:3]);
             NSString *userId = ObjectOrNil([command.arguments objectAtIndex:4]);
-            NSURL *redirectUri = ObjectOrNil([command.arguments objectAtIndex:5]);
+            NSURL *redirectUri = [NSURL URLWithString:ObjectOrNil([command.arguments objectAtIndex:5])];
             NSString *policy = ObjectOrNil([command.arguments objectAtIndex:6]);
             
             ADAuthenticationContext *authContext = [CordovaAdalPlugin getOrCreateAuthContext:authority
