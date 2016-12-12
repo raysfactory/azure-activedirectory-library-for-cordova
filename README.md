@@ -28,13 +28,27 @@ cordova plugin add https://github.com/jospete/azure-activedirectory-library-for-
 require("Q");
 
 var params = {
-    redirectUrl: "urn:ietf:wg:oauth:2.0:oob", // default to use
-    extraQueryParams: "nux=1", // all the updated libraries have this
+    
+    // default to use
+    redirectUrl: "urn:ietf:wg:oauth:2.0:oob",
+    
+    // default used by the updated ADAL libraries
+    extraQueryParams: "nux=1",
+    
+    // ** required **
     authority: "https://login.microsoftonline.com/[YOUR_TENANT]",
-    clientId: "[YOUR_CLIENT_ID]", // also sometimes called "App ID", looks something like this: f6dad784-f7d3-****-92bd-******
+    
+    // ** required ** also sometimes called "App ID", looks something like this: f6dad784-f7d3-****-92bd-******
+    clientId: "[YOUR_CLIENT_ID]",
+    
+    // ** required **
     policy: "[YOUR_SIGNIN_POLICY]",
-    userId: null, // don't need to track this in most cases
-    resourceUrl: null // legacy - no longer needed in the updated ADAL libraries
+    
+    // don't need to track this in most cases
+    userId: null,
+    
+    // legacy - no longer needed in the updated ADAL libraries
+    resourceUrl: null
 };
 
 var authContext = new window.Microsoft.ADAL.AuthenticationContext(params.authority);
@@ -64,6 +78,7 @@ var acquireTokenSilentAsync = function(){
 };
 
 // Authentication Flow...
+// NOTE: this will fail if it is called before cordova's "ready" event
 var authenticate = function(clear){
     
     if(clear){
@@ -106,7 +121,12 @@ var authenticate = function(clear){
 };
 ```
 
-## Build / Update ADALiOS.framework
+## Build / Update ADALiOS.framework (iOS)
+
+NOTE: you shouldn't need to do this since the correct ADAL iOS version is
+baked into this project, but I've added this in for better insight on how the whole thing works.
+
+** This is not guaranteed to be functional - I barely got it running when I rebuilt the framework libs. **
 
 at the root of this project:
 - npm install
