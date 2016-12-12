@@ -27,9 +27,13 @@ cordova plugin add https://github.com/jospete/azure-activedirectory-library-for-
 ```javascript
 require("Q");
 
-var AzureB2C = {};
-
-AzureB2C.params = {
+var AzureB2C = {
+    
+    // ADAL AuthenticationContext instance, must not be set before cordova is ready
+    authContext: null,
+    
+    // use this to make API requests after login
+    authorizationHeader: null,
     
     // default to use
     redirectUrl: "urn:ietf:wg:oauth:2.0:oob",
@@ -53,29 +57,30 @@ AzureB2C.params = {
     resourceUrl: null
 };
 
-AzureB2C.authContext = new window.Microsoft.ADAL.AuthenticationContext(params.authority);
-AzureB2C.authorizationHeader = null; // use this to make API requests after login
+AzureB2C.createContext = function(){
+    this.authContext = new Microsoft.ADAL.AuthenticationContext(this.authority);
+};
 
 // Use this to do a loud sign in initially...
 AzureB2C.acquireTokenAsync = function(){
-    return authContext.acquireTokenAsync(
-        params.resourceUrl,
-        params.clientId,
-        params.redirectUrl,
-        params.userId,
-        params.extraQueryParams,
-        params.policy
+    return this.authContext.acquireTokenAsync(
+        this.resourceUrl,
+        this.clientId,
+        this.redirectUrl,
+        this.userId,
+        this.extraQueryParams,
+        this.policy
     );
 };
 
 // Use this when the user has already signed in recently...
 AzureB2C.acquireTokenSilentAsync = function(){
-    return authContext.acquireTokenSilentAsync(
-        params.resourceUrl,
-        params.clientId,
-        params.userId,
-        params.redirectUrl,
-        params.policy
+    return this.authContext.acquireTokenSilentAsync(
+        this.resourceUrl,
+        this.clientId,
+        this.userId,
+        this.redirectUrl,
+        this.policy
     );
 };
 
@@ -83,16 +88,20 @@ AzureB2C.acquireTokenSilentAsync = function(){
 // NOTE: this will fail if it is called before cordova's "ready" event
 AzureB2C.authenticate = function(clear){
     
+    if(this.authContext === null){
+        this.createContext();
+    }
+    
     if(clear){
         console.log("clearing cache before login...");
-        authContext.tokenCache.clear();
+        this.authContext.tokenCache.clear();
     }
 
     var deferred = Q.defer();
     
     var loginSuccess = function(jwt){
         console.log("login success: " + JSON.stringify(jwt, null, "\t"));
-        authorizationHeader = "Bearer " + jwt.token;
+        AzureB2C.authorizationHeader = "Bearer " + jwt.token;
         deferred.resolve(jwt);
     };
     
@@ -102,14 +111,16 @@ AzureB2C.authenticate = function(clear){
     };
 
     var loudSignIn = function(){
-        acquireTokenAsync().then(loginSuccess, loginError);
+        AzureB2C.acquireTokenAsync()
+        .then(loginSuccess, loginError);
     };
 
     var parseCache = function(items){
 
         if(items.length > 0){
             console.log("cache has items, attempting silent login");
-            acquireTokenSilentAsync().then(loginSuccess, loudSignIn);
+            AzureB2C.acquireTokenSilentAsync()
+            .then(loginSuccess, loudSignIn);
             
         } else {
             console.log("cache is empty, attempting loud sign in");
@@ -117,7 +128,8 @@ AzureB2C.authenticate = function(clear){
         }
     };
 
-    authContext.tokenCache.readItems().then(parseCache, loudSignIn);
+    this.authContext.tokenCache.readItems()
+    .then(parseCache, loudSignIn);
 
     return deferred.promise;
 };
