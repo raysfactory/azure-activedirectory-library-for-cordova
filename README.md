@@ -27,7 +27,9 @@ cordova plugin add https://github.com/jospete/azure-activedirectory-library-for-
 ```javascript
 require("Q");
 
-var params = {
+var AzureB2C = {};
+
+AzureB2C.params = {
     
     // default to use
     redirectUrl: "urn:ietf:wg:oauth:2.0:oob",
@@ -51,11 +53,11 @@ var params = {
     resourceUrl: null
 };
 
-var authContext = new window.Microsoft.ADAL.AuthenticationContext(params.authority);
-var authorizationHeader = null; // use this to make API requests after login
+AzureB2C.authContext = new window.Microsoft.ADAL.AuthenticationContext(params.authority);
+AzureB2C.authorizationHeader = null; // use this to make API requests after login
 
 // Use this to do a loud sign in initially...
-var acquireTokenAsync = function(){
+AzureB2C.acquireTokenAsync = function(){
     return authContext.acquireTokenAsync(
         params.resourceUrl,
         params.clientId,
@@ -67,7 +69,7 @@ var acquireTokenAsync = function(){
 };
 
 // Use this when the user has already signed in recently...
-var acquireTokenSilentAsync = function(){
+AzureB2C.acquireTokenSilentAsync = function(){
     return authContext.acquireTokenSilentAsync(
         params.resourceUrl,
         params.clientId,
@@ -79,7 +81,7 @@ var acquireTokenSilentAsync = function(){
 
 // Authentication Flow...
 // NOTE: this will fail if it is called before cordova's "ready" event
-var authenticate = function(clear){
+AzureB2C.authenticate = function(clear){
     
     if(clear){
         console.log("clearing cache before login...");
@@ -119,6 +121,13 @@ var authenticate = function(clear){
 
     return deferred.promise;
 };
+
+var onCordovaReady = function(){
+    AzureB2C.authenticate();
+};
+
+document.addEventListener("deviceready", onCordovaReady, false);
+
 ```
 
 ## Build / Update ADALiOS.framework (iOS)
