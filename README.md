@@ -17,10 +17,13 @@ Be forewarned that this patch is _barely_ working, with minimal "happy-path" tes
 Via cordova CLI:
 
 ```
-cordova plugin add https://github.com/jospete/azure-activedirectory-library-for-cordova
+cordova plugin add https://github.com/raysfactory/azure-activedirectory-library-for-cordova
 ```
 
 **NOTE** - this patch will conflict with the original plugin if the original already exists in your project. The original plugin must be **replaced** by this one. This plugin is tagged as "cordova-plugin-ms-adal-b2c-patch", so you should delete "cordova-plugin-ms-adal" in your /plugins directory if that exists.
+
+**target scope add. only run android.** - this patch running on android only.
+
 
 ## Sample Usage
 
@@ -54,7 +57,14 @@ var AzureB2C = {
     userId: null,
     
     // legacy - no longer needed in the updated ADAL libraries
-    resourceUrl: ""
+    resourceUrl: "",
+
+    // target scopes (for permission application scope in b2c registered)
+    additionalScopes: 
+    {
+        "https://[your_tenant].onmicrosoft.com/[other_app]/[scope_name1]",
+        "https://[your_tenant].onmicrosoft.com/[other_app]/[scope_name2]"
+    }
 };
 
 AzureB2C.createContext = function(){
@@ -69,7 +79,8 @@ AzureB2C.acquireTokenAsync = function(){
         this.redirectUrl,
         this.userId,
         this.extraQueryParams,
-        this.policy
+        this.policy,
+        this.additionalScopes
     );
 };
 
