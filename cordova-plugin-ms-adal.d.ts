@@ -4,7 +4,7 @@
 // Definitions: ...
 
 declare namespace Microsoft {
-
+    
     namespace ADAL {
 
         interface IUserInfo {
@@ -32,6 +32,7 @@ declare namespace Microsoft {
             resource: string,
             tenantId: string,
             userInfo: IUserInfo
+            token: string;
         }
 
         interface IPromise {
@@ -79,6 +80,7 @@ declare namespace Microsoft {
             statusCode: string,
             tenantId: string,
             userInfo: IUserInfo
+            token: string;
         }
 
         class AuthenticationResult implements IAuthenticationResult {
@@ -91,7 +93,7 @@ declare namespace Microsoft {
             statusCode: string;
             tenantId: string;
             userInfo: IUserInfo;
-
+            token: string;
             /**
             * Creates authorization header for web requests.
             *
@@ -121,11 +123,12 @@ declare namespace Microsoft {
             * @param   {String}  extraQueryParameters
             *                                Extra query parameters (optional)
             *                                Parameters should be escaped before passing to this method (e.g. using 'encodeURI()')
+            * @param   {String[]} additionalScopes change scope paramerters (optional)
             *
             * @returns {Promise} Promise either fulfilled with AuthenticationResult object or rejected with error
             */
-            acquireTokenAsync(resourceUrl: string, clientId: string, redirectUrl: string, userId?: string, extraQueryParameters?: string): IPromiseAuthenticationResult;
-
+            acquireTokenAsync(resourceUrl: string, clientId: string, redirectUrl: string, userId?: string, extraQueryParameters?: string, policy?:string, additionalScopes?:string[]): IPromiseAuthenticationResult;
+            
             /**
              * Acquires token WITHOUT using interactive flow. It checks the cache to return existing result
              * if not expired. It tries to use refresh token if available. If it fails to get token without
@@ -188,10 +191,11 @@ declare namespace Microsoft {
             * @param   {String}  extraQueryParameters
             *                                Extra query parameters (optional)
             *                                Parameters should be escaped before passing to this method (e.g. using 'encodeURI()')
+            * @param   {String[]} additionalScopes change scope paramerters (optional)
             *
             * @returns {Promise} Promise either fulfilled with AuthenticationResult object or rejected with error
             */
-            acquireTokenAsync(resourceUrl: string, clientId: string, redirectUrl: string, userId?: string, extraQueryParameters?: string): IPromiseAuthenticationResult;
+            acquireTokenAsync(resourceUrl: string, clientId: string, redirectUrl: string, userId?: string, extraQueryParameters?: string, policy?:string, additionalScopes?:string[]): IPromiseAuthenticationResult;
 
             /**
              * Acquires token WITHOUT using interactive flow. It checks the cache to return existing result

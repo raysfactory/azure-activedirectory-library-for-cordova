@@ -60,7 +60,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
                 Log.w("CordovaAdalPlugin", "Unable to create secret key: " + e.getMessage());
             }
         }
-        
+
         setUseBroker(false, true); // needs to default to false, "setSkipBroker" inverts the default to true
     }
 
@@ -93,7 +93,24 @@ public class CordovaAdalPlugin extends CordovaPlugin {
             String policy = args.optString(7, null);
             policy = policy.equals("null") ? null : policy;
 
-            return acquireTokenAsync(authority, validateAuthority, resourceUrl, clientId, redirectUrl, userId, extraQueryParams, policy);
+            JSONArray additionalScopesArr = args.optJSONArray(8);
+            String[] additionalScopes = null;
+            if (additionalScopesArr != null)
+            {
+                additionalScopes = new String[additionalScopesArr.length()];
+                for(int idx = 0; idx < additionalScopesArr.length(); idx++)
+                {
+                    String ase = additionalScopesArr.optString(idx, null);
+                    ase = ase.equals("null") ? null : ase;
+                    additionalScopes[idx] = ase;
+                    Log.i("CordovaAdalPlugin", "additionalScopesArr idx:"+idx+":"+ase );
+                }
+            }else
+            {
+              Log.i("CordovaAdalPlugin", "additionalScopesArr is null. ");
+            }
+
+            return acquireTokenAsync(authority, validateAuthority, resourceUrl, clientId, redirectUrl, userId, extraQueryParams, policy, additionalScopes);
 
         } else if (action.equals("acquireTokenSilentAsync")) {
 
@@ -155,7 +172,8 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         return true;
     }
 
-    private boolean acquireTokenAsync(String authority, boolean validateAuthority, String resourceUrl, String clientId, String redirectUrl, String userId, String extraQueryParams, String policy) {
+    private boolean acquireTokenAsync(String authority, boolean validateAuthority, String resourceUrl, String clientId, String redirectUrl, String userId, String extraQueryParams, String policy,
+        String[] additionalScopes    ) {
 
         final AuthenticationContext authContext;
         try{
@@ -168,7 +186,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         // if (userId != null) {
         //     ITokenCacheStore cache = authContext.getCache();
         //     if (cache instanceof ITokenStoreQuery) {
-        // 
+        //
         //         List<TokenCacheItem> tokensForUserId = ((ITokenStoreQuery)cache).getTokensForUser(userId);
         //         if (tokensForUserId.size() > 0) {
         //             // Try to acquire alias for specified userId
@@ -176,12 +194,12 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         //         }
         //     }
         // }
-        
+
         // Working B2C example:
-        // 
+        //
         // UserIdentifier identifier = getUserInfo();
         // String extraParams = "nux=1&" + Constants.EXTRA_QP;
-        // 
+        //
         // mAuthContext.acquireToken(
         //      ToDoActivity.this,
         //      Constants.SCOPES, // []
@@ -194,9 +212,13 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         //      extraParams,
         //      new AuthenticationCallback<AuthenticationResult>()...
         // )
-        
+
         String[] scopes = {clientId};
         String[] extraScopes = {""};
+        if(additionalScopes != null)
+        {
+            scopes = additionalScopes;
+        }
         UserIdentifier identifier = new UserIdentifier(userId, USER_DISPLAYABLE_ID);
         DefaultAuthenticationCallback callback = new DefaultAuthenticationCallback(callbackContext);
 
@@ -217,6 +239,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
 
     }
 
+
     private boolean acquireTokenSilentAsync(String authority, boolean validateAuthority, String resourceUrl, String clientId, String userId) {
 
         final AuthenticationContext authContext;
@@ -226,7 +249,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, e.getMessage()));
             return true;
         }
-        
+
         String[] scopes = {clientId};
         UserIdentifier identifier = new UserIdentifier(userId, USER_DISPLAYABLE_ID);
         DefaultAuthenticationCallback callback = new DefaultAuthenticationCallback(callbackContext);
@@ -237,7 +260,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
             identifier,
             callback
         );
-        
+
         return true;
     }
 
@@ -254,7 +277,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
         JSONArray result = new JSONArray();
         ITokenCacheStore cache = authContext.getCache();
         List<TokenCacheItem> items = cache.readItems();
-        
+
         if(items != null && !items.isEmpty()){
             for(TokenCacheItem item : items){
                 result.put(tokenItemToJSON(item));
@@ -263,7 +286,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
 
         // if (cache instanceof ITokenCacheStore) {
         //     Iterator<TokenCacheItem> cacheItems = ((ITokenStoreQuery)cache).getAll();
-        // 
+        //
         //     while (cacheItems.hasNext()){
         //         TokenCacheItem item = cacheItems.next();
         //         result.put(tokenItemToJSON(item));
@@ -311,9 +334,9 @@ public class CordovaAdalPlugin extends CordovaPlugin {
     private boolean setUseBroker(boolean useBroker, boolean internal) {
 
         try {
-            
+
             AuthenticationSettings.INSTANCE.setSkipBroker(!useBroker);
-            
+
             if(internal){ // awful hack to get around the setSkipBroker inversion
                 return true;
             }
